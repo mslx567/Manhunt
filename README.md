@@ -28,3 +28,7 @@ In this project, I came in and rewrote this plugin so you can also enjoy my Manh
 --------------------------------------------------------------
 
 When the Manhunt starts, the hunter receives a type of compass that they can use to get closer to the hunters by right-clicking on it.
+
+-------------------------------------------------------------
+
+Coded by mslx
