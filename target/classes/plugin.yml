@@ -1,0 +1,23 @@
+name: ManhuntPlugin
+version: 1.0
+main: com.manhuntplugin.ManhuntPlugin
+api-version: 1.16
+description: A Minecraft Manhunt plugin where players can be Hunters or Runners.
+author: Mslx
+commands:
+  hunter:
+    description: Manage the Hunter team.
+    usage: /<command> add <player> | remove <player>
+  runner:
+    description: Manage the Runner team.
+    usage: /<command> add <player> | remove <player>
+  mstop:
+    description: Stop the Manhunt game.
+    usage: /<command>
+  meffect:
+    description: Apply effects to teams.
+    usage: /<command> <effect> <duration> <team>
+permissions:
+  manhunt.use:
+    description: Allow usage of the Manhunt commands.
+    default: true
