@@ -35,7 +35,7 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
     private boolean gameStarted = false;
     private Map<UUID, Map<PotionEffectType, Integer>> hunterEffects = new HashMap<>();
     private Map<UUID, Map<PotionEffectType, Integer>> runnerEffects = new HashMap<>();
-    private Map<UUID, ItemStack> hunterTrackers = new HashMap<>(); // ذخیره کامپس ترکر برای هر هانتر
+    private Map<UUID, ItemStack> hunterTrackers = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -43,7 +43,7 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
         getCommand("runner").setExecutor(this);
         getCommand("mstop").setExecutor(this);
         getCommand("meffect").setExecutor(this);
-        getCommand("meffect").setTabCompleter(this); // تب کامپلیتر برای meffect
+        getCommand("meffect").setTabCompleter(this);
         getServer().getPluginManager().registerEvents(this, this);
     }
 
@@ -55,7 +55,7 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
                 if (player != null) {
                     hunters.add(player.getUniqueId());
                     sender.sendMessage(ChatColor.GREEN + player.getName() + " has been added as a Hunter.");
-                    giveTracker(player); // به محض اضافه شدن به عنوان هانتر، ترکر داده می‌شود
+                    giveTracker(player);
                 }
             } else if (args[0].equalsIgnoreCase("remove")) {
                 Player player = Bukkit.getPlayer(args[1]);
@@ -88,7 +88,7 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
             gameStarted = false;
             runners.clear();
             hunters.clear();
-            hunterTrackers.clear(); // پاک کردن تمام کامپس‌ها
+            hunterTrackers.clear();
             sender.sendMessage(ChatColor.YELLOW + "Manhunt has been stopped.");
             return true;
         }
@@ -127,9 +127,9 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
         for (UUID playerId : team) {
             Player player = Bukkit.getPlayer(playerId);
             if (player != null) {
-                player.addPotionEffect(new PotionEffect(effectType, Integer.MAX_VALUE, power, true, false)); // دائمی
+                player.addPotionEffect(new PotionEffect(effectType, Integer.MAX_VALUE, power, true, false));
                 effectsMap.putIfAbsent(playerId, new HashMap<>());
-                effectsMap.get(playerId).put(effectType, power); // ذخیره قدرت افکت
+                effectsMap.get(playerId).put(effectType, power);
             }
         }
     }
@@ -145,7 +145,7 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
             compass.setItemMeta(meta);
         }
         hunter.getInventory().addItem(compass);
-        hunterTrackers.put(hunter.getUniqueId(), compass); // ذخیره کامپس ترکر برای این هانتر
+        hunterTrackers.put(hunter.getUniqueId(), compass);
     }
 
     @EventHandler
@@ -156,7 +156,7 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
         if (item != null && item.getType() == Material.COMPASS && hunters.contains(player.getUniqueId())) {
             ItemStack tracker = hunterTrackers.get(player.getUniqueId());
 
-            if (tracker != null && item.isSimilar(tracker)) { // فقط اگر کامپس همان ترکر اصلی باشد
+            if (tracker != null && item.isSimilar(tracker)) {
                 Location closestRunnerLocation = null;
                 double closestDistance = Double.MAX_VALUE;
 
@@ -188,7 +188,7 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
             ItemStack tracker = hunterTrackers.get(player.getUniqueId());
 
             if (tracker != null && droppedItem.isSimilar(tracker)) {
-                event.setCancelled(true); // جلوگیری از دراپ کردن کامپس ترکر
+                event.setCancelled(true); 
                 player.sendMessage(ChatColor.RED + "You cannot drop the Runner Tracker!");
             }
         }
@@ -200,8 +200,8 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
         UUID playerId = player.getUniqueId();
 
         if (hunters.contains(playerId)) {
-            player.getInventory().remove(Material.COMPASS); // Remove compass tracker
-            hunterTrackers.remove(playerId); // Remove the tracker from the map
+            player.getInventory().remove(Material.COMPASS);
+            hunterTrackers.remove(playerId);
             removeEffects(player, hunterEffects.get(playerId));
         } else if (runners.contains(playerId)) {
             removeEffects(player, runnerEffects.get(playerId));
@@ -215,7 +215,7 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
 
         if (hunters.contains(playerId)) {
             reapplyEffects(player, hunterEffects.get(playerId));
-            giveTracker(player); // Give a new tracker on respawn
+            giveTracker(player);
         } else if (runners.contains(playerId)) {
             reapplyEffects(player, runnerEffects.get(playerId));
         }
@@ -224,7 +224,7 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
     private void removeEffects(Player player, Map<PotionEffectType, Integer> effects) {
         if (effects != null) {
             for (PotionEffectType effect : effects.keySet()) {
-                player.removePotionEffect(effect); // Remove effect
+                player.removePotionEffect(effect);
             }
         }
     }
@@ -232,7 +232,7 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
     private void reapplyEffects(Player player, Map<PotionEffectType, Integer> effects) {
         if (effects != null) {
             for (Map.Entry<PotionEffectType, Integer> entry : effects.entrySet()) {
-                player.addPotionEffect(new PotionEffect(entry.getKey(), Integer.MAX_VALUE, entry.getValue(), true, false)); // Reapply effect
+                player.addPotionEffect(new PotionEffect(entry.getKey(), Integer.MAX_VALUE, entry.getValue(), true, false));
             }
         }
     }
@@ -243,9 +243,8 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
             Player attacker = (Player) event.getDamager();
             Player victim = (Player) event.getEntity();
 
-            // فقط وقتی که رانر به هانتر آسیب می‌زند، بازی را شروع کن
             if (runners.contains(attacker.getUniqueId()) && hunters.contains(victim.getUniqueId())) {
-                startGame(); // اینجا متد startGame() را صدا می‌زنیم
+                startGame();
             }
         }
     }
@@ -257,33 +256,32 @@ public class ManhuntPlugin extends JavaPlugin implements CommandExecutor, Listen
             for (UUID runnerId : runners) {
                 Player runner = Bukkit.getPlayer(runnerId);
                 if (runner != null) {
-                    runner.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1)); // سرعت به رانر
+                    runner.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1));
                 }
             }
 
             for (UUID hunterId : hunters) {
                 Player hunter = Bukkit.getPlayer(hunterId);
                 if (hunter != null) {
-                    hunter.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 1)); // کُندی به هانتر
+                    hunter.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 1));
                 }
             }
 
-            // افکت درخشان برای هر دو تیم
             for (UUID runnerId : runners) {
                 Player runner = Bukkit.getPlayer(runnerId);
                 if (runner != null) {
-                    runner.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 200, 1)); // افکت درخشان به رانر
+                    runner.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 200, 1));
                 }
             }
 
             for (UUID hunterId : hunters) {
                 Player hunter = Bukkit.getPlayer(hunterId);
                 if (hunter != null) {
-                    hunter.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 200, 1)); // افکت درخشان به هانتر
+                    hunter.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 200, 1));
                 }
             }
 
-            Bukkit.broadcastMessage(ChatColor.GREEN + "The Manhunt has started!"); // پیام شروع بازی
+            Bukkit.broadcastMessage(ChatColor.GREEN + "The Manhunt has started!");
         }
     }
 
