@@ -31,4 +31,4 @@ When the Manhunt starts, the hunter receives a type of compass that they can use
 
 -------------------------------------------------------------
 
-Coded by mslx
+Coded by mslx!
